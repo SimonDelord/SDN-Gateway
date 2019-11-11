@@ -1,0 +1,27 @@
+---
+- name: deploy configure and start ovs
+  hosts: A.B.C.D
+  become: true
+
+  tasks:
+  - name: Creates the directory to deploy the ovs rpm
+    file:
+      path: /root/rpmbuild/RPMS/x86_64
+      state: directory
+
+  - name: Copy Remote-To-SDN GW the ovs rpm file (from jumphost to sdn-gw)
+    synchronize:
+       src=/root/rpmbuild/RPMS/x86_64/openvswitch-2.12.0-1.el7.x86_64.rpm
+       dest=/root/rpmbuild/RPMS/x86_64/
+    delegate_to: localhost
+
+  - name: deploy ovs rpm package from jumhost to SDN GW
+    yum:
+      name: /root/rpmbuild/RPMS/x86_64/openvswitch-2.12.0-1.el7.x86_64.rpm
+      state: present
+
+  - name: Start ovs process
+    systemd:
+      name: openvswitch
+      state: started
+      enabled: yes
