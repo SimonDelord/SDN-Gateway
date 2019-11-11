@@ -1,0 +1,22 @@
+INSTALL SCRIPT FOR OVS
+#this is taken from the following URL
+#https://www.linuxtechi.com/install-use-openvswitch-kvm-centos-7-rhel-7/
+
+Step 1 - Install the required packages using yum
+yum install wget openssl-devel  python-sphinx gcc make python-devel openssl-devel kernel-devel graphviz kernel-debug-devel autoconf automake rpm-build redhat-rpm-config libtool python-twisted-core python-zope-interface PyQt4 desktop-file-utils libcap-ng-devel groff checkpolicy selinux-policy-devel -y
+
+Step 2 - Download OVS (check the latest software version)
+mkdir -p ~/rpmbuild/SOURCES
+wget http://openvswitch.org/releases/openvswitch-2.9.2.tar.gz
+cp openvswitch-2.9.2.tar.gz ~/rpmbuild/SOURCES/
+tar xfz openvswitch-2.9.2.tar.gz
+
+Step 3- build the RPM
+rpmbuild -bb --nocheck openvswitch-2.9.2/rhel/openvswitch-fedora.spec
+exit
+
+Step 4- local install (if required) otherwise this is the file that will be used by the Ansible Playbook to deploy on an SDN GW
+yum localinstall /home/ovs/rpmbuild/RPMS/x86_64/openvswitch-2.9.2-1.el7.x86_64.rpm -y
+
+current build on 2.12.0
+wget https://www.openvswitch.org/releases/openvswitch-2.12.0.tar.gz
