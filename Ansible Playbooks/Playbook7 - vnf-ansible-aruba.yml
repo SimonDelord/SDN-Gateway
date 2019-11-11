@@ -1,0 +1,32 @@
+---
+- name: Prepare all software to deploy VNFs on SDN GW
+  hosts: A.B.C.D
+  become: true
+
+  tasks:
+  - name: Creates the directory to deploy the VNF Repository
+    file:
+      path: /ANSIBLE
+      state: directory
+
+  - name: Copy Remote-To-SDN GW the VNF files (from jumphost to sdn-gw) First Aruba qcow2
+    synchronize:
+       src=/root/VNF-REPOSITORY/Aruba_VMC2-1.qcow2
+       dest=/ANSIBLE/
+    delegate_to: localhost
+
+  - name: Copy Remote-To-SDN GW the VNF files (from jumphost to sdn-gw) Second Aruba qcow2
+    synchronize:
+       src=/root/VNF-REPOSITORY/Aruba_VMC2.qcow2
+       dest=/ANSIBLE/
+    delegate_to: localhost
+
+  - name: Copy the VNF File (aruba-vnf-ansible-file.xml) for the ArubaVMC
+    synchronize:
+      src=/etc/ansible/all-scripts-for-sdn-gw/aruba-vnf-file.xml
+      dest=/ANSIBLE/
+    delegate_to: localhost
+
+  - name: Launch Aruba VMC
+    command: >
+        virsh create /ANSIBLE/aruba-vnf-file.xml
