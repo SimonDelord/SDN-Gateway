@@ -1,0 +1,103 @@
+================================Juniper VNF Deployment=================================================='
+#copy the juniper.qcow2 relevant file in the relevant SDN GW folder
+#copy the day 0 config file in the relevant SDN GW folder - the day 0 config file template is called SRX-day0Config-working.txt 
+# and convert it to an iso, be careful to use a password of at least 6 letters
+
+mkisofs -l -o /root/juniper/junos-vSRX.iso /root/juniper/SRX-day0Config-working.txt
+
+#create the xml definition of the vSRX VNF
+or use the following command
+virt-install --name vSRXVM --ram=4096 --cpu SandyBridge,+vmx,-invtsc --vcpus=2 --arch=x86_64 --disk path=/root/junos/junos-vsrx3-x86-64-19.1R1-S1.3.qcow2,size=16,device=disk,bus=ide,format=qcow2 --os-type linux --os-variant rhel7 --import --disk path=/root/junos/junos-vSRX.iso,device=cdrom,bus=ide --network=bridge:ovs-br0,model=virtio,virtualport_type=openvswitch --network=bridge:ovs-chain,model=virtio,virtualport_type=openvswitch --network=bridge:ovs-lan,model=virtio,virtualport_type=openvswitch
+
+#create an SRX VNF file template
+virsh dumpxml vSRXVM > /root/juniper/vsrx-vnf-file.xml
+
+========================================================================================================
+
+================Juniper vSRX Day 0 config========================
+system {
+    host-name vSRX-VM;
+    root-authentication {
+        plain-text-password <password - 6 characters at least!>;
+    }
+    services {
+        ssh {
+            root-login allow;
+        }
+        telnet;
+        web-management {
+            http {
+                interface fxp0.0;
+            }
+        }
+    }
+    syslog {
+        user * {
+            any emergency;
+        }
+        file messages {
+            any any;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+    }
+    license {
+        autoupdate {
+            url https://ae1.juniper.net/junos/key_retrieval;
+        }
+    }
+}
+security {
+    forwarding-options {
+        family {
+            inet6 {
+                mode flow-based;
+            }
+        }
+    }
+    policies {
+        default-policy {
+            permit-all;
+        }
+    }
+    zones {
+        security-zone AAA {
+	interfaces {
+                all;
+            }
+        }
+    }
+}
+interfaces {
+    ge-0/0/0 {
+        unit 0 {
+            family inet {
+                address 10.1.1.1/24;
+            }
+
+        }
+    }
+    ge-0/0/1 {
+        unit 0 {
+            family inet {
+                address 10.1.2.1/24;
+            }
+
+        }
+    }
+   fxp0 {
+        unit 0 {
+            family inet {
+                address 172.16.1.26/24;
+            }
+        }
+    }
+
+}
+routing-options {
+    static {
+        route 0.0.0.0/0 next-hop 172.16.1.1;
+    }
+}
