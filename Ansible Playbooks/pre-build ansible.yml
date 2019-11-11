@@ -1,10 +1,10 @@
 ---
-- name: deploy configure and start collectd
+- name: Add the EPEL Repo to the machine (SDN GW)
   hosts: A.B.C.D
   become: true
 
   tasks:
-  - name: deploy collectd software package on sdn gateway
+  - name: deploy the EPEL Repo to the machine
     yum:
       state: latest
       name: epel-release
