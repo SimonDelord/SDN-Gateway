@@ -1,0 +1,10 @@
+run the Ansible PLaybooks in the following order
+
+0/ pre-build-ansible.yml (does the initial package deployment for the rest)
+1/ collectd-ansible.yml (does the collectd configuration on the SDN GW)
+2/ ovs-ansible.yml (does the deployment of OVS Package on the SDN GW)
+3/ ovs-switches-setup.yml (does the deployment of the OVS switches on the SDN GW)
+4/ vnf-preparation-ansible.yml (does the deployment of the various qcow2 on the SDN GW)
+5/ vnf-ansible-cisco.yml (does the spinning up of the cisco CSR1kV)
+6/ vnf-ansible-juniper.yml (does the spinning up of the vSRX)
+7/ vnf-ansible-aruba.yml (does the spinning up of the aruba VMC)
