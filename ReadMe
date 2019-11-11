@@ -1,2 +1,3 @@
 This is a simple project for automating an x-86 platform sitting on premises.
 It allows for the deployment of VNFs, Containers, Overlay Networks and VMs
+It relies on Ansible for the various tasks
