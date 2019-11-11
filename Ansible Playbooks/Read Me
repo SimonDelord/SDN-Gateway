@@ -8,3 +8,7 @@ run the Ansible PLaybooks in the following order
 5/ vnf-ansible-cisco.yml (does the spinning up of the cisco CSR1kV)
 6/ vnf-ansible-juniper.yml (does the spinning up of the vSRX)
 7/ vnf-ansible-aruba.yml (does the spinning up of the aruba VMC)
+
+
+There are also multiple files that need to be available on the main server so they can be pushed onto the SDN GW
+These files are in SDN-Gateway / Ansible Playbooks / Required Files/ 
