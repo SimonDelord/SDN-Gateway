@@ -1,0 +1,39 @@
+---
+- name: Prepare all software to deploy VNFs on SDN GW
+  hosts: A.B.C.D
+  become: true
+
+  tasks:
+  - name: Creates the directory to deploy the VNF Repository
+    file:
+      path: /ANSIBLE
+      state: directory
+
+  - name: Copy Remote-To-SDN GW the VNF files (from jumphost to sdn-gw) Cisco First
+    synchronize:
+       src=/root/VNF-REPOSITORY/csr1000v-universalk9.03.15.00.S.155-2.S-std.qcow2
+       dest=/ANSIBLE/csr1kv.qcow2
+    delegate_to: localhost
+
+  - name: Copy to SDN GW the Juniper VSRX files
+    synchronize:
+      src=/root/VNF-REPOSITORY/junos-vsrx3-x86-64-19.1R1-S1.3.qcow2
+      dest=/ANSIBLE/
+    delegate_to: localhost
+
+  - name: Install KVM
+    become: true
+    yum:
+      state: present
+      name:
+        - qemu-kvm
+        - libvirt
+        - libvirt-python
+        - libguestfs-tools
+        - virt-install
+
+  - name: Start KVM
+    systemd:
+      name: libvirtd
+      state: started
+      enabled: yes
