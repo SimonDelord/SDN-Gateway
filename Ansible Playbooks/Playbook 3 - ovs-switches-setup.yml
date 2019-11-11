@@ -1,0 +1,40 @@
+---
+- name: Deploy the various OVS swiches and bring them up
+  hosts: A.B.C.D
+  become: true
+
+  tasks:
+  - name: Create the OVS for Mgmt - OVS-BR0
+    openvswitch_bridge:
+      bridge: ovs-br0
+      state: present
+
+  - name: Create the OVS for WAN - OVS-WAN
+    openvswitch_bridge:
+      bridge: ovs-wan
+      state: present
+
+  - name: Create the OVS for LAN - OVS-LAN
+    openvswitch_bridge:
+      bridge: ovs-lan
+      state: present
+
+  - name: Create the OVS for Service Chaining - OVS-CHAIN
+    openvswitch_bridge:
+      bridge: ovs-chain
+      state: present
+      
+  - name: Add an IP address to the Management OVS
+    command: ip addr add X.Y.Z.L/24 dev ovs-br0
+
+  - name: bring the ovs-br0 switch up
+    command: ifconfig ovs-br0 up
+
+  - name: bring the ovs-wan switch up
+    command: ifconfig ovs-wan up
+
+  - name: bring the ovs-chain switch up
+    command: ifconfig ovs-chain up
+
+  - name: bring the ovs-lan switch up
+    command: ifconfig ovs-lan up
