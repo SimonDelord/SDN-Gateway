@@ -1,0 +1,22 @@
+---
+- name: deploy configure and start collectd
+  hosts: A.B.C.D
+  become: true
+
+  tasks:
+  - name: deploy collectd software package on sdn gateway
+    yum:
+      state: latest
+      name: collectd
+
+  - name: Copy Remote-To-SDN GW the collectd.conf file (from jumphost to sdn-gw)
+    synchronize:
+       src=/etc/ansible/collectd.conf
+       dest=/etc/
+    delegate_to: localhost
+
+  - name: Start collectd process
+    systemd:
+      name: collectd
+      state: started
+      enabled: yes
