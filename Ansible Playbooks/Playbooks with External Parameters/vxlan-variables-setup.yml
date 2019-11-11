@@ -1,0 +1,39 @@
+---
+- name: configure VXLAN between two SDN Gateways
+  hosts: "{{sdngatewayA}}"
+  become: true
+
+  tasks:
+
+  - name: create a vxlan interface for ovs-vxlan
+    openvswitch_port:
+      bridge: ovs-vxlan
+      port: "{{vxlanid}}"
+      state: present
+      set: Interface "{{vxlanid}}" type=vxlan options:remote_ip="{{sdngatewayB}}" options:key="{{vxlanid}}"       
+
+
+- name: configure VXLAN between two SDN Gateways
+  hosts: "{{sdngatewayB}}"
+  become: true
+
+  tasks:
+
+  - name: create a vxlan interface for ovs-vxlan
+    openvswitch_port:
+      bridge: ovs-vxlan
+      port: "{{vxlanid}}"
+      state: present
+      set: Interface "{{vxlanid}}" type=vxlan options:remote_ip="{{sdngatewayA}}" options:key="{{vxlanid}}"
+      
+      
+      
+      ================Define under Ansible Tower the Template and add the following External Variables via the Survey =======
+      sdngatewayA 
+      sdngatewayB
+      vxlanid
+      
+      Otherwise in ansible playbook run the following command
+      
+      ansible-playbook vxlan-variables-setup.yml -e "sdngatewayA=X.Y.Z.D" -e "sdngatewayB=F.T.G.N" -e "vxlanid=250"
+      ========================================================================================================================
