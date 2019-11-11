@@ -1,0 +1,30 @@
+---
+- name: deploy configure and start VNF
+  hosts: A.B.C.D
+  become: true
+
+  tasks:
+  - name: lists the VNFs on the host
+    virt:
+        command: list_vms
+    register: all_vms
+
+  - name: print all returned values
+    debug:
+      msg: "{{ all_vms.list_vms }}"
+  - name: Copy the ISO (day 0 config file) for the CSR1K
+    synchronize:
+      src=/etc/ansible/all-scripts-for-sdn-gw/csr_config.iso
+      dest=/ANSIBLE/
+    delegate_to: localhost
+
+
+  - name: Copy the VNF File (csr-vnf-ansible-file.xml) for the CSR1K
+    synchronize:
+      src=/etc/ansible/all-scripts-for-sdn-gw/csr-vnf-ansible-file.xml
+      dest=/ANSIBLE/
+    delegate_to: localhost
+
+  - name: create Cisco CSR
+    command: >
+        virsh create /ANSIBLE/csr-vnf-ansible-file.xml
