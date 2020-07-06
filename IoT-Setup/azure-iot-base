@@ -1,0 +1,9 @@
+---
+- name: deploy configure and start VNF
+  hosts: 10.1.145.213
+
+  tasks:
+
+  - name: deploy base IoT config
+    command: >
+        az iot edge set-modules --hub-name Simon-IoT-Solution --device-id {{edgeDevice}} --content /root/IoTPython/base-deployment.json
