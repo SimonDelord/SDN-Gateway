@@ -1,0 +1,5 @@
+This section covers the AWS Greengrass deployment on an SDN GW (base and with modules) and the Azure Edge IoT stack (base and module).
+Both set of playbooks rely on a specific EC2 host that can run both the aws cli and the azure cli (10.1.145.213)
+The host then runs a set of cli commands against the AWS account / Azure account.
+
+The various modules for the configuration are in the "support python" modules
