@@ -1,0 +1,9 @@
+---
+- name: deploy base AWS Greengrass Setup on EC2
+  hosts: 10.1.145.213
+
+  tasks:
+
+  - name: deploy base AWS IoT Greengrass config
+    command: >
+        aws greengrass create-deployment --deployment-type NewDeployment --group-id 3e11d4c7-f9c0-4ff1-aa52-56ff5a0069a3 --group-version-id fd4d2005-b88f-44e0-9287-d659793a7ece
