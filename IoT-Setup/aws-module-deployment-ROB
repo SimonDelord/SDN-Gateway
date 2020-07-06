@@ -1,0 +1,9 @@
+---
+- name: deploy lambda functions on EC2 ROB
+  hosts: 10.1.145.213
+
+  tasks:
+
+  - name: deploy base AWS IoT Greengrass config
+    command: >
+        aws greengrass create-deployment --deployment-type NewDeployment --group-id 3e11d4c7-f9c0-4ff1-aa52-56ff5a0069a3 --group-version-id 71e471dd-f4ad-4953-a757-e58e9896390e
